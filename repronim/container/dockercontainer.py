@@ -80,8 +80,9 @@ class DockercontainerContainer(Container):
             # TODO: might not work - not tested it
             command = ['export %s=%s;' % k for k in command_env.items()] + command
         execute = self._client.exec_create(container=self._container_id, cmd=command)
-        response = [line for line in self._client.exec_start(exec_id=execute['Id'], stream=True)]
-        return response
+        for line in self._client.exec_start(exec_id=execute['Id'], stream=True):
+            yield line
+        # TODO: assess 0 status exit code.  If non-0 -- blow up
 
     def _get_base_image_dockerfile(self, base_image_tag):
         """

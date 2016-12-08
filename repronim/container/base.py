@@ -121,11 +121,12 @@ class Container(object):
         list
             STDOUT lines from container
         """
+        full_stdout = []
         for command in self._command_buffer:
             self._lgr.debug("Running command '%s'", command['command'])
-            stdout = self.execute_command(command['command'], command['env'])
-            if stdout:
-                self._lgr.debug("\n".join(stdout))
+            for stdout in self.execute_command(command['command'], command['env']):
+                full_stdout.append(stdout)
+                self._lgr.debug(stdout)
 
     def set_envvar(self, var, value):
         """
