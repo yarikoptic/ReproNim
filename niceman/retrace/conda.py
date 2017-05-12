@@ -48,6 +48,20 @@ $> conda list --json
   },
 ...
 
+# information from "/home/yoh/anaconda3/conda-meta/history" protocoling entire history, sweet
+$> conda list --revisions | head               
+2017-05-02 17:04:24  (rev 0)    
+    abstract-rendering-0.5.1-np110py35_0
+    alabaster-0.7.6-py35_0
+    anaconda-2.4.0-np110py35_0
+    anaconda-client-1.1.0-py35_0
+    argcomplete-1.0.0-py35_1
+    astropy-1.0.5-np110py35_1
+    babel-2.1.1-py35_0
+    beautifulsoup4-4.4.1-py35_0
+    bitarray-0.8.1-py35_0
+...
+
 # for information about specific package with version/revision.   Still could be
 # multiple hits (I guess) if coming from different channels, and definetely could
 # have multiple entries in the list here because of different arch's, builds
@@ -84,7 +98,8 @@ $> conda info git='2.8.2 3' --json
 
 But I think we will just need to load all the meta-information stored
 in conda-meta which has EVERYTHING we would need -- build, files, url, md5sum of
-the package etc.  I guess we could just take it as is, prune "null"'ed items
+the package etc (but seems to have nothing about pip installs!).
+I guess we could just take it as is, prune "null"'ed items
 and prune files not referenced (although keep .py for any .pyc used?)
 
 hopa:~/anaconda2/envs/datalad
@@ -156,6 +171,50 @@ $> conda list --explicit
 @EXPLICIT
 https://conda.anaconda.org/conda-forge/linux-64/backports.shutil_get_terminal_size-1.0.0-py27_1.tar.bz2
 
+$> conda list -e 
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+ca-certificates=2017.1.23=1
+certifi=2017.1.23=py34_0
+ncurses=5.9=10
+openssl=1.0.2k=0
+pip=9.0.1=py34_0
+
+Actually the easiest initial step to capture info is
+(deprecation comes from pip call)
+$> conda env export
+DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
+name: datalad-py3.4
+channels: !!python/tuple
+- anaconda-fusion
+- conda-forge
+- defaults
+dependencies:
+- conda-forge::ca-certificates=2017.1.23=1
+- conda-forge::certifi=2017.1.23=py34_0
+- conda-forge::ncurses=5.9=10
+- conda-forge::openssl=1.0.2k=0
+- conda-forge::pip=9.0.1=py34_0
+- conda-forge::python=3.4.5=2
+- conda-forge::readline=6.2=0
+- conda-forge::requests=2.12.4=py34_0
+- conda-forge::setuptools=32.3.1=py34_0
+- conda-forge::sqlite=3.13.0=1
+- conda-forge::tk=8.5.19=1
+- conda-forge::wheel=0.29.0=py34_0
+- conda-forge::xz=5.2.2=0
+- conda-forge::zlib=1.2.11=0
+- pip:
+  - appdirs==1.4.3
+prefix: /home/yoh/anaconda3/envs/datalad-py3.4
+
+
+- so probably worth doing that first
+- complement with urls from --explicit for completness? ;)
+- loading info about files, tracing to specify which files were used
+- extend info about channels, python, etc
+
 # Notes
 
 -  has "fuzzy" version matching with a single = by matching the leading
@@ -168,4 +227,8 @@ https://conda.anaconda.org/conda-forge/linux-64/backports.shutil_get_terminal_si
 
   so we would be able only to store information to install from pypi, but
   should allow to provide a 'url' field!
+
+- supports hooks to be executed when activating/deactivating
+  environment: https://conda.io/docs/using/envs.html#linux-and-macos
+
 """
