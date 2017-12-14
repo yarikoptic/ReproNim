@@ -5,7 +5,7 @@
 #
 # To run:
 #	docker run -it --name niceman \
-#		-v $PWD:/root/niceman \
+#		-v $PWD:/opt/niceman \
 #		-v /var/run/docker.sock:/var/run/docker.sock \
 #		niceman:latest
  
@@ -14,16 +14,16 @@ FROM debian:jessie
 
 RUN apt-get update \
     && apt-get install -y build-essential libssl-dev libffi-dev vim wget \
-    && apt-get install -y python-dev python-pyparsing python-crypto python-pip \
+    && apt-get install -y python-dev python-pyparsing python-crypto python-pip virtualenv \
     && pip install --upgrade pip
 
 
-COPY . /root/niceman
+COPY . /opt/niceman
 COPY docker/niceman.cfg /root
 
 # TODO: create a matching user here so we could bind mount and develop
 # within docker environment
-RUN pip install -e '/root/niceman[devel]'
+RUN pip install -e '/opt/niceman[devel]'
 
 WORKDIR /root
 
