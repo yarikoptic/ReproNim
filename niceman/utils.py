@@ -33,6 +33,7 @@ from time import sleep
 from inspect import getargspec
 
 from niceman.support.exceptions import CommandError
+from niceman.dochelpers import exc_str
 
 lgr = logging.getLogger("niceman.utils")
 
@@ -534,6 +535,24 @@ def line_profile(func):
             prof.print_stats()
     return newfunc
 
+
+@optional_args
+def return_if_fails(func,
+                    msg=None,
+                    exception=Exception,
+                    return_value=None,
+                    logger=None):
+    @wraps(func)
+    def newfunc(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except exception as exc:
+            (logger or lgr).debug(
+                msg + ' given args %s and %s: %s'
+                % (args, kwargs, exc_str(exc))
+            )
+            return return_value
+    return newfunc
 #
 # Context Managers
 #

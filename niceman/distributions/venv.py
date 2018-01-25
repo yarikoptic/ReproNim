@@ -17,7 +17,12 @@ import attr
 from niceman.distributions import Distribution
 from niceman.distributions.piputils import parse_pip_show, parse_pip_list
 from niceman.dochelpers import exc_str
-from niceman.utils import execute_command_batch, abbreviate, PathRoot
+from niceman.utils import (
+    execute_command_batch,
+    abbreviate,
+    PathRoot,
+    return_if_fails
+)
 
 from .base import DistributionTracer
 from .base import Package
@@ -93,14 +98,10 @@ class VenvTracer(DistributionTracer):
                 file_to_pkg[full_path] = pkg
         return packages, file_to_pkg
 
+    @return_if_fails('Could not detect virtualenv', logger=lgr, return_value=False)
     def _is_venv_directory(self, path):
-        try:
-            self._session.execute_command("grep -q VIRTUAL_ENV "
-                                          "{}/bin/activate".format(path))
-        except Exception as exc:
-            lgr.debug("Did not detect virtualenv at the path %s: %s",
-                      path, exc_str(exc))
-            return False
+        self._session.execute_command("grep -q VIRTUAL_ENV "
+                                      "{}/bin/activate".format(path))
         return True
 
     def _get_venv_path(self, path):
@@ -175,30 +176,21 @@ class VenvTracer(DistributionTracer):
         for pkg, _, loc in parse_pip_list(out):
             yield pkg, loc
 
+    @return_if_fails('Could not determine Python version', logger=lgr)
     def _python_version(self, venv_path):
-        try:
-            out, err = self._session.execute_command(
-                venv_path + "/bin/python --version")
-            # Python 2 sends its version to stderr, while Python 3
-            # sends it to stdout.  Version has format "Python
-            pyver = (out if "Python" in out else err)
-            return pyver.strip().split()[1]
-        except Exception as exc:
-            lgr.debug("Could not determine python version: %s",
-                      exc_str(exc))
-            return
+        out, err = self._session.execute_command(
+            venv_path + "/bin/python --version")
+        # Python 2 sends its version to stderr, while Python 3
+        # sends it to stdout.  Version has format "Python
+        pyver = (out if "Python" in out else err)
+        return pyver.strip().split()[1]
 
     # A virtualenv directory doesn't contain any information about
     # which virtualenv created it, so we just go with its current
     # version and location.
-
+    @return_if_fails('Could not determine virtualenv version', logger=lgr)
     def _venv_version(self):
-        try:
-            out, _ = self._session.execute_command("virtualenv --version")
-        except Exception as exc:
-            lgr.debug("Could not determine virtualenv version: %s",
-                      exc_str(exc))
-            return
+        out, _ = self._session.execute_command("virtualenv --version")
         return out.strip()
 
     def _venv_exe_path(self):
