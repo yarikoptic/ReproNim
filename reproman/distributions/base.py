@@ -189,7 +189,7 @@ class SpecObject(object):
 def _register_with_representer(cls):
     # TODO: check if we could/should just inherit from  yaml.YAMLObject
     # or could may be craft our own metaclass
-    yaml.SafeDumper.add_representer(cls, SpecObject.yaml_representer)
+    yaml._add_representer(cls, SpecObject.yaml_representer)
 
 
 @attr.s

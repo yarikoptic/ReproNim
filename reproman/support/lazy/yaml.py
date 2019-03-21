@@ -9,19 +9,35 @@ class _stub(object):
 
     Supports only callables and attributes ATM.
     """
+
+    _representers = []
+    _mod = None
+    _this_mod = None
+
+
     def __init__(self, name):
         self.name = name
         self.was_called = False
 
-    @property
-    def __realthing__(self):
+    @classmethod
+    def __real_import(cls):
         import yaml as mod
         from . import yaml as this_mod
+        cls._mod = mod
+        cls._this_mod = this_mod
+        this_mod.__doc__ = mod.__doc__
+        for args in cls._representers:
+            this_mod.SafeDumper.add_representer(*args)
+
+    @property
+    def __realthing__(self):
         if self.was_called:
             raise RuntimeError("Should have not been called twice!!!!")
-        this_mod.__doc__ = mod.__doc__
-        a = getattr(mod, self.name)
-        setattr(this_mod, self.name, a)
+        if self._mod is None:
+            self.__real_import()
+
+        a = getattr(self._mod, self.name)
+        setattr(self._this_mod, self.name, a)
         self.was_called = True
         return a
 
@@ -36,3 +52,9 @@ load = _stub('load')
 safe_dump = _stub('safe_dump')
 safe_load = _stub('safe_load')
 SafeDumper = _stub('SafeDumper')
+
+
+def _add_representer(*args):
+    """A lazy collection of representers to be given to real SafeDumper when
+    we finally import yaml"""
+    _stub._representers.append(args)
