@@ -34,4 +34,5 @@ class _stub(object):
 
 load = _stub('load')
 safe_dump = _stub('safe_dump')
+safe_load = _stub('safe_load')
 SafeDumper = _stub('SafeDumper')

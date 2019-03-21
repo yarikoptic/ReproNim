@@ -12,7 +12,7 @@ from importlib import import_module
 import abc
 from configparser import NoSectionError
 
-import yaml
+from reproman.support.lazy import yaml
 from glob import glob
 import os
 import os.path as op

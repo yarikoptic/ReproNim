@@ -11,7 +11,7 @@ import os
 from collections import defaultdict
 
 import attr
-import yaml
+from reproman.support.lazy import yaml
 from reproman.resource.session import get_local_session
 
 from reproman.distributions import Distribution, piputils

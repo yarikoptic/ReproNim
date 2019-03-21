@@ -11,7 +11,7 @@ import os.path as op
 import abc
 import attr
 import collections
-import yaml
+from reproman.support.lazy import yaml
 
 from importlib import import_module
 

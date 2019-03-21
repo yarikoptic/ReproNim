@@ -13,7 +13,7 @@ import os.path as op
 import pytest
 
 from unittest.mock import patch
-import yaml
+from reproman.support.lazy import yaml
 
 from reproman.cmdline.main import main
 from reproman.cmd import Runner

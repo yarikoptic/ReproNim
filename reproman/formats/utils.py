@@ -10,7 +10,7 @@
 
 from __future__ import absolute_import
 
-import yaml
+from reproman.support.lazy import yaml
 
 from reproman.utils import safe_write
 

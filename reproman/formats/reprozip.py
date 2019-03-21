@@ -12,7 +12,7 @@ See: https://vida-nyu.github.io/reprozip/
 """
 
 import io
-import yaml
+from reproman.support.lazy import yaml
 
 from .base import Provenance
 

@@ -17,7 +17,7 @@ import logging
 from collections import OrderedDict
 
 import attr
-import yaml
+from reproman.support.lazy import yaml
 
 import reproman
 from reproman.distributions.base import Factory

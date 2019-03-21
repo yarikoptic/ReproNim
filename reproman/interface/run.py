@@ -13,7 +13,7 @@ from argparse import REMAINDER
 import collections
 import logging
 import textwrap
-import yaml
+from reproman.support.lazy import yaml
 
 from shlex import quote as shlex_quote
 

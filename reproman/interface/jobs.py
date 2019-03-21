@@ -12,7 +12,7 @@
 from functools import partial
 import operator
 import logging
-import yaml
+from reproman.support.lazy import yaml
 
 from reproman.dochelpers import exc_str
 from reproman.interface.base import Interface

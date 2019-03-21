@@ -13,7 +13,7 @@ import sys
 from unittest import mock
 from subprocess import call
 
-import yaml
+from reproman.support.lazy import yaml
 import attr
 
 from reproman.formats.reproman import RepromanProvenance

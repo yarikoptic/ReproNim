@@ -14,7 +14,7 @@ import logging
 import os
 import os.path as op
 
-import yaml
+from reproman.support.lazy import yaml
 
 from reproman import cfg
 

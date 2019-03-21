@@ -10,7 +10,7 @@
 import os.path as op
 
 import pytest
-import yaml
+from reproman.support.lazy import yaml
 
 from reproman.support.jobs.local_registry import LocalRegistry
 
